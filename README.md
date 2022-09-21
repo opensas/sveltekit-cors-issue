@@ -4,7 +4,7 @@ Steps to reproduce:
 
 1. create the api project
 
-```
+```shell
 mkdir issue
 cd issue
 
@@ -17,7 +17,7 @@ npm i express cors
 
 Create index.js file:
 
-```
+```javascript
 const express = require('express')
 const cors = require('cors')
 
@@ -32,14 +32,14 @@ app.listen(2020, () => (console.log('server is listening on port 2020')))
 
 Run server
 
-```
+```shell
 $ node index.js 
 server is listening on port 2020
 ```
 
 Test server *without* sending the `Origin` header
 
-```
+```shell
 $ curl -vs localhost:2020
 
 < HTTP/1.1 200 OK
@@ -58,7 +58,7 @@ $ curl -vs localhost:2020
 
 Test server sending the `Origin` header
 
-```
+```shell
 $ curl -vs localhost:2020 --header 'origin: http://localhost:2000'
 > GET / HTTP/1.1
 > Host: localhost:2020
@@ -85,7 +85,7 @@ Notice the `Access-Control-Allow-Origin: http://localhost:2000` response header
 
 2. create the frontend project
 
-```
+```shell
 $ npm create svelte@latest frontend
 
 ✔ Which Svelte app template? › Skeleton project
@@ -106,7 +106,7 @@ npm run dev
 
 Add /src/routes/+page.js file
 
-```
+```javascript
 export async function load({ fetch }) {
 	const response = await fetch('http://localhost:2020')
 	return await response.json()
@@ -115,7 +115,7 @@ export async function load({ fetch }) {
 
 Update /src/routes/+page.svelte
 
-```
+```html
 <script>
 	export let data
 	console.log({data})
@@ -126,7 +126,7 @@ Update /src/routes/+page.svelte
 
 3. See error:
 
-```
+```shell
 CORS error: No 'Access-Control-Allow-Origin' header is present on the requested resource
 Error: CORS error: No 'Access-Control-Allow-Origin' header is present on the requested resource
     at fetch (file:///home/sas/devel/apps/glas-it/apps/wingback/tmp/migration/issue/frontend/node_modules/@sveltejs/kit/src/runtime/server/page/fetch.js:102:15)
@@ -139,7 +139,7 @@ Error: CORS error: No 'Access-Control-Allow-Origin' header is present on the req
 
 Note: the error can be solved adding `request.headers.set('Origin', event.url.origin);` to `@sveltejs/kit/src/runtime/server/page/fetch.js` (see [here](https://github.com/sveltejs/kit/blob/1a2459fa683638c8914626ff11bb4f736b45b6ff/packages/kit/src/runtime/server/page/fetch.js#L88))
 
-```
+```javascript
 						const cookie = get_cookie_header(url, request.headers.get('cookie'));
 						if (cookie) request.headers.set('cookie', cookie);
 					}
